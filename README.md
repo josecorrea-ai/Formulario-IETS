@@ -1,24 +1,42 @@
 # Formulario IETS
 
-Proyecto de formulario de registro con:
+Proyecto de **formulario de registro de usuarios** desarrollado con:
 
 * **Frontend:** React
-* **Backend:** ASP.NET Core Web API
 * **Base de datos:** Firebase Firestore
+* **Autenticación:** Firebase Auth
 
-El proyecto contiene dos carpetas principales.
+El sistema permite:
+
+* Registrar usuarios mediante un formulario
+* Guardar los datos en **Firebase Firestore**
+* Visualizar los registros desde un **panel de administración**
+* Administrar usuarios (editar, eliminar)
+
+---
+
+# Estructura del proyecto
 
 ```
-Formulario-IETS
+formulario-salud
 │
-├── ApiFormulario       → Backend (.NET API)
-└── formulario-salud    → Frontend (React)
-```
-
-La configuración de Firebase se encuentra en:
-
-```
-firebase-config.md
+├── src
+│   ├── components
+│   │   ├── admin
+│   │   │   └── AdminPanel.jsx
+│   │   ├── Formulario.jsx
+│   │   └── Login.jsx
+│   │
+│   ├── firebase
+│   │   └── config.js
+│   │
+│   ├── styles
+│   │
+│   └── App.jsx
+│
+├── public
+├── package.json
+└── README.md
 ```
 
 ---
@@ -28,7 +46,6 @@ firebase-config.md
 Antes de ejecutar el proyecto se debe tener instalado:
 
 * Node.js
-* .NET SDK
 * npm
 
 Verificar instalación:
@@ -36,61 +53,38 @@ Verificar instalación:
 ```
 node -v
 npm -v
-dotnet --version
 ```
 
 ---
 
-# 1. Backend (.NET API)
+# Instalación del proyecto
 
-Entrar a la carpeta del backend:
-
-```
-cd ApiFormulario
-```
-
-Ejecutar el servidor:
+1. Clonar el repositorio:
 
 ```
-dotnet run
+git clone https://github.com/TU-USUARIO/formulario-salud.git
 ```
 
-Si todo funciona correctamente aparecerá algo como:
-
-```
-Application started. Press Ctrl+C to shut down.
-Hosting environment: Development
-Content root path: ApiFormulario
-```
-
-La API quedará ejecutándose localmente.
-
----
-
-# 2. Frontend (React)
-
-Abrir otra terminal y entrar a la carpeta:
+2. Entrar a la carpeta del proyecto:
 
 ```
 cd formulario-salud
 ```
 
-Instalar dependencias:
+3. Instalar dependencias:
 
 ```
 npm install
 ```
 
-Instalar Firebase:
+---
+
+# Ejecutar el proyecto
+
+Iniciar el servidor de desarrollo:
 
 ```
-npm install firebase
-```
-
-Ejecutar el proyecto:
-
-```
-npm start
+npm run dev
 ```
 
 Abrir en el navegador:
@@ -103,53 +97,73 @@ http://localhost:5173
 
 # Configuración de Firebase
 
-La configuración del archivo:
+La configuración de Firebase se encuentra en:
 
 ```
 src/firebase/config.js
 ```
 
-y la creación del proyecto en Firebase se explica en:
+Allí se inicializa Firebase y se conecta con:
 
-```
-firebase-config.md
-```
+* **Firebase Authentication**
+* **Cloud Firestore**
+
+Para usar el proyecto debes:
+
+1. Crear un proyecto en **Firebase Console**
+2. Copiar la configuración del proyecto
+3. Pegarla en `config.js`
+
+---
+
+# Funcionalidades del sistema
+
+El sistema incluye:
+
+### Login
+
+Permite iniciar sesión mediante Firebase Authentication.
+
+### Formulario de registro
+
+Permite registrar nuevos usuarios con:
+
+* Nombre
+* Apellido
+* Tipo de documento
+* Identificación
+* Fecha de nacimiento
+* Correo electrónico
+* Documento PDF
+
+Los datos se guardan en **Firestore**.
+
+### Panel de administración
+
+El administrador puede:
+
+* Ver todos los usuarios registrados
+* Editar registros
+* Eliminar usuarios
+* Visualizar documentos PDF
+* Ver el contador de usuarios registrados
+
+---
+
+# Tecnologías utilizadas
+
+* React
+* Firebase
+* Firestore
+* React Router
+* CSS
 
 ---
 
 # Notas
 
-Si aparece un mensaje sobre certificados HTTPS de ASP.NET Core se puede ejecutar:
-
-```
-dotnet dev-certs https --trust
-```
-
-Esto instala el certificado de desarrollo para ejecutar la API localmente.
-
----
-
-# Ejecución completa
-
-1. Ejecutar la API:
-
-```
-cd ApiFormulario
-dotnet run
-```
-
-2. Ejecutar el frontend:
-
-```
-cd formulario-salud
-npm install
-npm run dev
-```
-
-3. Abrir en el navegador:
-
-```
-http://localhost:5173
-```
+* El proyecto utiliza **Firebase como backend**.
+* Los datos se almacenan en **Cloud Firestore**.
+* El sistema está pensado para ejecutarse como **aplicación web**.
 
 ---
