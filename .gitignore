@@ -1,0 +1,30 @@
+# DEPENDENCIAS
+node_modules/
+
+# ARCHIVOS DE ENTORNO
+.env
+
+# BUILD / PRODUCCION
+dist
+build
+
+# LOGS
+logs
+*.log
+
+# CACHE
+.cache/
+.parcel-cache/
+.vite/
+.next/
+
+# SISTEMA OPERATIVO
+.DS_Store
+
+# EDITORES
+.vscode/
+
+# ARCHIVOS TEMPORALES
+*.tmp
+*.temp
+*.bak

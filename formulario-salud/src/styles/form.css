@@ -1,0 +1,346 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* FONDO CON FRANJAS AZULES ARRIBA/ABAJO */
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #2f7ea6, #7fb7d6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 15px;
+    position: relative;
+}
+
+/* franja superior azul oscuro */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #1a4b6d;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+/* franja inferior azul oscuro */
+body::after {
+    content: "";
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #1a4b6d;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+/* CONTENEDOR PRINCIPAL (blanco semi-transparente) */
+.container {
+    width: 100%;
+    max-width: 650px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(2px);
+    padding: 40px;
+    border-radius: 28px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    position: relative;
+    z-index: 10;
+    border: 1px solid rgba(255,255,255,0.5);
+}
+
+/* LOGO (estilo instituto) */
+.logo {
+    position: absolute;
+    top: -100px;
+    left: -150px;
+    width: 170px;
+    z-index: 100;
+}
+
+
+/* TÍTULO PRINCIPAL */
+h2 {
+    text-align: center;
+    color: #1a4b6d;
+    margin-bottom: 25px;
+    font-weight: 650;
+    font-size: 1.9rem;
+    letter-spacing: -0.3px;
+    border-bottom: 2px dashed #b0d3e8;
+    padding-bottom: 10px;
+}
+
+/* FORMULARIO */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column; /* label arriba del input */
+    margin-bottom: 0.5rem;
+}
+
+.fila-dos-campos {
+    display: flex;       
+    gap: 1rem;           
+}
+
+.fila-dos-campos .campo {
+    flex: 1;             
+    display: flex;
+    flex-direction: column; 
+}
+
+label {
+    font-weight: 600;
+    color: #1e3f5c;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 5px; 
+}
+
+input, select {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid #cbdae5;
+    font-size: 15px;
+    transition: all 0.25s ease;
+    background: #f9fcff;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #2f7ea6;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(47, 126, 166, 0.15);
+}
+
+input[type="file"] {
+    padding: 10px;
+    background: #f0f6fb;
+    color: #1e3f5c;
+}
+
+
+/* TÉRMINOS Y CONDICIONES */
+.terminos {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #eaf3fb;
+    padding: 12px 20px;
+    border-radius: 50px;
+    border: 1px solid #c2d9ec;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.terminos input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #2f7ea6;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.terminos label {
+    margin: 0;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 500;
+    color: #1d3f5a;
+    font-size: 0.95rem;
+}
+
+.link-terminos {
+    color: #1d7a46;
+    font-weight: 700;
+    cursor: pointer;
+    background: #dff0e6;
+    padding: 4px 12px;
+    border-radius: 40px;
+    margin-left: 5px;
+    white-space: nowrap;
+    transition: 0.2s;
+    border: 1px solid #9fccb3;
+}
+
+.link-terminos:hover {
+    background: #c0e0cf;
+    text-decoration: underline;
+}
+
+/* BOTÓN ENVIAR */
+button {
+    margin-top: 10px;
+    background: #2f7ea6;
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.25s ease;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background: #1a4b6d;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* POPUP REGISTRO EXITOSO */
+.popup-container {
+    background: white;
+    padding: 35px;
+    border-radius: 15px;
+    text-align: center;
+    width: 320px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+}
+
+.popup-icon {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+.popup-container h2 {
+    color: #2ecc71;
+    margin-bottom: 10px;
+    border-bottom: none;
+    font-size: 1.8rem;
+}
+
+.popup-container p {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.popup-button {
+    background: #2ecc71;
+    border: none;
+    padding: 10px 25px;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.popup-button:hover {
+    background: #27ae60;
+}
+
+/* POPUP TÉRMINOS (ventana modal) */
+.popup-terminos {
+    background: white;
+    padding: 30px;
+    width: 500px;
+    max-width: 90%;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.popup-terminos h2 {
+    margin-bottom: 15px;
+    text-align: center;
+    color: #1a4b6d;
+    border-bottom: 2px solid #b0d3e8;
+}
+
+.popup-terminos p {
+    margin-bottom: 12px;
+    line-height: 1.6;
+    color: #444;
+    font-size: 14px;
+}
+
+@media (min-width: 1200px) {
+    .logo {
+        top: -100xp;
+        width: 180px;
+    }
+}
+
+/* Para tablets */
+@media (max-width: 992px) and (min-width: 769px) {
+    .logo {
+        top: -45px;
+        transform: translateY(-50%);
+        width: 160px;
+        left: 25px;
+    }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .container {
+        padding: 30px 20px;
+    }
+    .logo {
+        width: 150px;
+        top: -90px;
+        left: 20px;
+    }
+    h2 {
+        font-size: 1.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 25px 18px;
+    }
+    .logo {
+        top: -60px;
+        width: 130px;
+        left: 15px;
+        padding: 8px 12px;
+    }
+    .logo span {
+        width: 35px;
+        height: 35px;
+        font-size: 1.5rem;
+    }
+    h2 {
+        font-size: 1.5rem;
+    }
+    input, select {
+        padding: 12px;
+        font-size: 14px;
+    }
+    .terminos {
+        padding: 10px 15px;
+        flex-wrap: wrap;
+    }
+    .link-terminos {
+        white-space: normal;
+    }
+    button {
+        padding: 12px;
+    }
+}
+
