@@ -84,13 +84,13 @@ npm install
 Iniciar el servidor de desarrollo:
 
 ```
-npm run dev
+npm start
 ```
 
 Abrir en el navegador:
 
 ```
-http://localhost:5173
+http://localhost:3000/
 ```
 
 ---
