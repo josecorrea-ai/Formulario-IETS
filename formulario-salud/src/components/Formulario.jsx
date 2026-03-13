@@ -87,7 +87,7 @@ function Formulario() {
       setOpen(true);
 
       setTimeout(() => {
-        navigate("/AdminPanel");
+        navigate("/admin");
       }, 2000);
 
     } catch (error) {
