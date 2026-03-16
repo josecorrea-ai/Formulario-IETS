@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Popup from "reactjs-popup";
 import "../styles/form.css";
+import { guardarLog } from "../utils/logService";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
-import { db } from "../firebase/config.js";
+import { db, auth } from "../firebase/config.js";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/Logo_2.png";
 
 function Formulario() {
 
@@ -84,10 +84,11 @@ function Formulario() {
 
       await addDoc(collection(db, "formularios"), form);
 
+      await guardarLog(auth.currentUser.email || "usuario_formulario");
       setOpen(true);
 
       setTimeout(() => {
-        navigate("/admin");
+        navigate("/Login");
       }, 2000);
 
     } catch (error) {
@@ -99,8 +100,6 @@ function Formulario() {
 
   return (
     <div className="container">
-
-      <img src={logo} alt="logo" className="logo" />
 
       <h2>Formulario de Registro</h2>
 
@@ -211,6 +210,22 @@ function Formulario() {
         </div>
 
         <button type="submit">Enviar</button>
+
+        <div className="login-link">
+
+          <div className="linea">
+            <span>¿Ya tienes cuenta? Inicia sesión</span>
+          </div>
+
+          <button
+            type="button"
+            className="btn-login"
+            onClick={() => navigate("/login")}
+          >
+            Iniciar sesión
+          </button>
+
+        </div>
 
       </form>
 

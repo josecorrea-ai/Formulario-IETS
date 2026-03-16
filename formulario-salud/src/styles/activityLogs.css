@@ -1,0 +1,201 @@
+/* Estilos adicionales para ActivityLogs */
+
+/* Badges de acciones */
+.action-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.header-users{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.action-creó, .action-creo {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.action-editó, .action-edito {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.action-eliminó, .action-elimino {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.action-consultó, .action-consulto {
+  background: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
+.action-default {
+  background: #e9ecef;
+  color: #495057;
+  border: 1px solid #ced4da;
+}
+
+/* Botones de acción en tabla */
+.edit-btn {
+  background: #2ecc71 !important;
+  margin-right: 5px;
+}
+
+.edit-btn:hover {
+  background: #27ae60 !important;
+}
+
+.delete-btn {
+  background: #e74c3c !important;
+}
+
+.delete-btn:hover {
+  background: #c0392b !important;
+}
+
+/* Ajustes para la tabla */
+th:last-child, td:last-child {
+  min-width: 140px;
+}
+
+/* Mejoras para las tarjetas móviles */
+.user-card {
+  transition: transform 0.2s;
+}
+
+.user-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.card-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-field span {
+  font-weight: bold;
+  color: #2f7ea6;
+}
+
+/* Estilo para cuando no hay datos */
+td[colspan="5"] {
+  text-align: center;
+  padding: 30px;
+  color: #999;
+  font-style: italic;
+}
+
+/* Animación para el contador */
+.counter-circle {
+  transition: all 0.3s ease;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(47, 126, 166, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(47, 126, 166, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(47, 126, 166, 0);
+  }
+}
+
+/* Mejoras responsive */
+@media (max-width: 768px) {
+  .header-users {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .btn-new {
+    width: 100%;
+  }
+
+  .user-counter {
+    margin-top: 20px;
+  }
+
+  .counter-circle {
+    width: 60px;
+    height: 60px;
+    font-size: 22px;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .card-actions button {
+    width: 100%;
+    margin: 5px 0;
+  }
+}
+
+/* Estilos para el topbar */
+.admin-topbar {
+  margin-bottom: 20px;
+}
+
+.logout-btn {
+  background: #e74c3c;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}
+
+/* Mejora para el scroll en la lista */
+.user-list {
+  max-height: 70vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #2f7ea6 #f0f0f0;
+}
+
+.user-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.user-list::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.user-list::-webkit-scrollbar-thumb {
+  background: #2f7ea6;
+  border-radius: 4px;
+}
+
+.user-list::-webkit-scrollbar-thumb:hover {
+  background: #1a4b6d;
+}
+
+/* Estilo para la fecha en la tabla */
+td:nth-child(4) {
+  font-size: 13px;
+  color: #666;
+}

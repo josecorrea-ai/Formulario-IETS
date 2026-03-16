@@ -1,11 +1,11 @@
 // src/components/admin/AdminPanel.jsx
 import { useEffect, useState } from "react";
-import { db } from "../../firebase/config";
+import { db, auth } from "../../firebase/config";
 import { collection, getDocs, updateDoc, deleteDoc, doc, addDoc } from "firebase/firestore";
 import "../../styles/adminPanel.css";
-import { auth } from "../../firebase/config";
-import { signOut } from "firebase/auth";
+import { guardarLog } from "../../utils/logService";
 import { useNavigate } from "react-router-dom";
+import NavBar from "../navigation/navBar.jsx";
 
 export default function AdminPanel() {
 
@@ -24,21 +24,19 @@ export default function AdminPanel() {
     archivo: ""
   });
 
-  const handleLogout = async () => {
 
-    try {
-
-        await signOut(auth);
-        navigate("/");
-    } catch (error) {
-        console.error("Error al cerrar sesión", error);
-    }
-
-  };
 
   const fetchUsers = async () => {
+
     const snapshot = await getDocs(collection(db, "formularios"));
-    setUsers(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+
+    setUsers(
+      snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+    );
+
   };
 
   useEffect(() => {
@@ -46,6 +44,7 @@ export default function AdminPanel() {
   }, []);
 
   const handleEdit = (user) => {
+
     setIsCreating(false);
     setEditingUser(user);
 
@@ -58,6 +57,7 @@ export default function AdminPanel() {
       fecha: user.fecha,
       archivo: user.archivo
     });
+
   };
 
   const handleCreate = async () => {
@@ -67,8 +67,11 @@ export default function AdminPanel() {
 
     await addDoc(collection(db, "formularios"), form);
 
+    await guardarLog(auth.currentUser.email, "crear_usuario", form.correo);
+
     closeModal();
-    fetchUsers(); /*Recarga los users*/
+    fetchUsers();
+
   };
 
   const handleUpdate = async () => {
@@ -80,18 +83,24 @@ export default function AdminPanel() {
 
     await updateDoc(userRef, form);
 
+    await guardarLog(auth.currentUser.email, "editar_usuario", form.correo);
+
     closeModal();
     fetchUsers();
+
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, correo) => {
 
     const confirmDelete = window.confirm("¿Seguro que quieres eliminar este registro?");
     if (!confirmDelete) return;
 
     await deleteDoc(doc(db, "formularios", id));
 
+    await guardarLog(auth.currentUser.email, "eliminar_usuario", correo);
+
     fetchUsers();
+
   };
 
   const handleChange = (e) => {
@@ -100,6 +109,7 @@ export default function AdminPanel() {
       ...form,
       [e.target.name]: e.target.value
     });
+
   };
 
   const closeModal = () => {
@@ -116,23 +126,18 @@ export default function AdminPanel() {
       fecha: "",
       archivo: ""
     });
+
   };
 
   const openCreate = () => {
-    
     navigate("/formulario");
-
   };
 
   return (
 
+      
     <div className="admin-container">
-
-      <div className="admin-topbar">
-        <button className="logout-btn" onClick={handleLogout}>
-            Cerrar Sesión
-        </button>
-      </div>
+      <NavBar />
 
       <div className="user-list">
 
@@ -144,58 +149,122 @@ export default function AdminPanel() {
           </button>
         </div>
 
-        <table>
+        {/* TABLA (PC) */}
 
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Tipo Documento</th>
-              <th>Identificación</th>
-              <th>Correo</th>
-              <th>Fecha</th>
-              <th>Archivo</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
+        <div className="table-wrapper">
 
-          <tbody>
+          <table>
 
-            {users.length === 0 && (
+            <thead>
               <tr>
-                <td colSpan="8">No hay usuarios registrados</td>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Tipo Documento</th>
+                <th>Identificación</th>
+                <th>Correo</th>
+                <th>Fecha</th>
+                <th>Archivo</th>
+                <th>Acciones</th>
               </tr>
-            )}
+            </thead>
 
-            {users.map((u) => (
+            <tbody>
 
-              <tr key={u.id}>
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan="8">No hay usuarios registrados</td>
+                </tr>
+              )}
 
-                <td>{u.nombre}</td>
-                <td>{u.apellido}</td>
-                <td>{u.tipoDocumento}</td>
-                <td>{u.identificacion}</td>
-                <td>{u.correo}</td>
-                <td>{u.fecha}</td>
+              {users.map((u) => (
 
-                <td>
-                  {u.archivo
-                    ? <a href={u.archivo} target="_blank" rel="noreferrer">Ver PDF</a>
-                    : "Sin archivo"}
-                </td>
+                <tr key={u.id}>
 
-                <td>
-                  <button onClick={() => handleEdit(u)}>Editar</button>
-                  <button onClick={() => handleDelete(u.id)}>Eliminar</button>
-                </td>
+                  <td>{u.nombre}</td>
+                  <td>{u.apellido}</td>
+                  <td>{u.tipoDocumento}</td>
+                  <td>{u.identificacion}</td>
+                  <td>{u.correo}</td>
+                  <td>{u.fecha}</td>
 
-              </tr>
+                  <td>
+                    {u.archivo
+                      ? <a href={u.archivo} target="_blank" rel="noreferrer">Ver PDF</a>
+                      : "Sin archivo"}
+                  </td>
 
-            ))}
+                  <td className="action-buttons">
+                    <button className="edit-btn" onClick={() => handleEdit(u)}>Editar</button>
+                    <button className="delete-btn" onClick={() => handleDelete(u.id, u.correo)}>Eliminar</button>
+                  </td>
 
-          </tbody>
+                </tr>
 
-        </table>
+              ))}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        {/* CARDS (CELULAR) */}
+
+        <div className="users-cards">
+
+          {users.map((u) => (
+
+            <div className="user-card" key={u.id}>
+
+              <div className="card-field">
+                <span>Nombre:</span> {u.nombre}
+              </div>
+
+              <div className="card-field">
+                <span>Apellido:</span> {u.apellido}
+              </div>
+
+              <div className="card-field">
+                <span>Documento:</span> {u.tipoDocumento}
+              </div>
+
+              <div className="card-field">
+                <span>Identificación:</span> {u.identificacion}
+              </div>
+
+              <div className="card-field">
+                <span>Correo:</span> {u.correo}
+              </div>
+
+              <div className="card-field">
+                <span>Fecha:</span> {u.fecha}
+              </div>
+
+              <div className="card-field">
+                <span>Archivo:</span>
+
+                {u.archivo
+                  ? <a href={u.archivo} target="_blank" rel="noreferrer">Ver PDF</a>
+                  : "Sin archivo"}
+              </div>
+
+              <div className="card-actions">
+
+                <button className="edit-btn" onClick={() => handleEdit(u)}>
+                  Editar
+                </button>
+
+                <button className="delete-btn" onClick={() => handleDelete(u.id, u.correo)}>
+                  Eliminar
+                </button>
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </div>
 
       </div>
 
@@ -224,16 +293,16 @@ export default function AdminPanel() {
               {isCreating ? "Nuevo Usuario" : "Editar Usuario"}
             </h2>
 
-            <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange} />
-            <input name="apellido" placeholder="Apellido" value={form.apellido} onChange={handleChange} />
-            <input name="tipoDocumento" placeholder="Tipo Documento" value={form.tipoDocumento} onChange={handleChange} />
-            <input name="identificacion" placeholder="Identificación" value={form.identificacion} onChange={handleChange} />
-            <input name="correo" placeholder="Correo" value={form.correo} onChange={handleChange} />
-            <input name="fecha" type="date" value={form.fecha} onChange={handleChange} />
+            <input name="nombre" placeholder="Nombre" value={form.nombre} onChange={handleChange}/>
+            <input name="apellido" placeholder="Apellido" value={form.apellido} onChange={handleChange}/>
+            <input name="tipoDocumento" placeholder="Tipo Documento" value={form.tipoDocumento} onChange={handleChange}/>
+            <input name="identificacion" placeholder="Identificación" value={form.identificacion} onChange={handleChange}/>
+            <input name="correo" placeholder="Correo" value={form.correo} onChange={handleChange}/>
+            <input name="fecha" type="date" value={form.fecha} onChange={handleChange}/>
 
             <div className="modal-buttons">
 
-              <button onClick={isCreating ? handleCreate : handleUpdate}>
+              <button className="save-btn" onClick={isCreating ? handleCreate : handleUpdate}>
                 {isCreating ? "Crear Usuario" : "Actualizar"}
               </button>
 
@@ -250,5 +319,7 @@ export default function AdminPanel() {
       )}
 
     </div>
+
   );
+
 }

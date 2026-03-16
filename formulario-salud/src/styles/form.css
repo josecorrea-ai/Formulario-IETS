@@ -56,16 +56,6 @@ body::after {
     border: 1px solid rgba(255,255,255,0.5);
 }
 
-/* LOGO (estilo instituto) */
-.logo {
-    position: absolute;
-    top: -100px;
-    left: -150px;
-    width: 170px;
-    z-index: 100;
-}
-
-
 /* TÍTULO PRINCIPAL */
 h2 {
     text-align: center;
@@ -135,6 +125,70 @@ input[type="file"] {
     color: #1e3f5c;
 }
 
+/*Iniciar Sesion*/
+.login-link{
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.linea{
+    width: 100%;
+    text-align: center;
+    position: relative;
+    color: #6b7b88;
+    font-size: 14px;
+}
+
+.linea::before,
+.linea::after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 25%;
+    height: 1px;
+    background: #cbd7e1;
+}
+
+.linea::before{
+    left: 0;
+}
+
+.linea::after{
+    right: 0;
+}
+
+.google-btn:hover{
+    background: #2f7ea6;
+    color: white;
+}
+
+.google-btn{
+    width: 100%;
+    height: 50px;
+    background: white;
+    color: #444;
+    border: 1px solid #dadce0;
+    border-radius: 10px;
+    padding: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+
+    transition: background 0.2s, color 0.2;
+}
+
+.logo-google{
+    width: 35px;
+}
 
 /* TÉRMINOS Y CONDICIONES */
 .terminos {
@@ -145,7 +199,7 @@ input[type="file"] {
     padding: 12px 20px;
     border-radius: 50px;
     border: 1px solid #c2d9ec;
-    width: fit-content;
+    width: 100%;
     max-width: 100%;
 }
 
