@@ -1,147 +1,121 @@
+// src/components/auth/Login.jsx
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/config";
-import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { GoogleAuthProvider } from "firebase/auth";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase/config";
 import { guardarLog } from "../utils/logService";
-import "../styles/form.css";
+import "../styles/login.css";
 
 function Login() {
-
-  const [correo, setCorreo] = useState("");
-  const [password, setPassword] = useState("");
-  const provider = new GoogleAuthProvider();
-
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  provider.setCustomParameters({
-    hd: "iest.org.co"
-  });
-
-  const iniciarSesion = async (e) => {
-
+  const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
-
-      await signInWithEmailAndPassword(auth, correo, password);
-      
-      await guardarLog(correo, "inicio_sesion", correo);
-      console.log("login correcto");
-
+      await signInWithEmailAndPassword(auth, email, password);
+      await guardarLog(auth.currentUser.email, "iniciar_sesion");
       navigate("/admin");
-
     } catch (error) {
-
-      console.error(error);
-      alert("Correo o contraseña incorrectos");
-
+      setError("Credenciales inválidas. Intenta de nuevo.");
     }
-
   };
 
-  const loginGoogle = async () => {
-
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
     try {
-
-      const result = await signInWithPopup(auth, provider);
-
-      const user = result.user;
-      const email = user.email;
-      const DOMINIO = "@iets.org.co";
-
-        if (!email.endsWith(DOMINIO)) {
-
-          alert("Solo se permiten cuentas del dominio iest.org.com");
-
-          await signOut(auth);
-
-          return;
-
-        }
-
-      console.log(user);
-
+      await signInWithPopup(auth, provider);
+      await guardarLog(auth.currentUser.email, "iniciar_sesion_google");
       navigate("/admin");
-
     } catch (error) {
-
-      console.error(error);
-
+      setError("Error al iniciar sesión con Google.");
     }
-
   };
 
   return (
+    <div className="login-screen">
+      <div className="logo-bar">
+        <div className="logo-icon-wrapper">
+          <svg width="36" height="28" viewBox="0 0 36 28" fill="none">
+            <path d="M2 26C2 26 8 14 18 8C28 2 34 6 34 6" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+            <path d="M5 22C5 22 10 13 18 9C26 5 31 8 31 8" stroke="rgba(255,255,255,0.35)" strokeWidth="1" fill="none" strokeLinecap="round"/>
+            <circle cx="18" cy="14" r="4" fill="#1A9E8A"/>
+            <circle cx="18" cy="14" r="2" fill="white"/>
+          </svg>
+          <span className="logo-icon-text">Salud</span>
+        </div>
+        <div className="logo-divider"></div>
+        <div className="logo-text">
+          <span className="logo-iets">IETS</span>
+          <span className="logo-sub">Instituto de Evaluación<br/>Tecnológica en Salud</span>
+        </div>
+      </div>
 
-    <div className="container">
+      <div className="login-card">
+        <h2 className="card-title">Iniciar Sesión</h2>
+        <p className="card-sub">Accede al Sistema de Registro IETS</p>
+        <div className="card-divider"></div>
 
-      <h2>Iniciar Sesión</h2>
+        {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={iniciarSesion}>
-
-        <div className="fila-dos-campos">
-          <div className="campo">
-            <label>Correo electrónico</label>
+        <form onSubmit={handleLogin}>
+          <div className="field-group">
+            <label className="field-label">Correo Electrónico</label>
             <input
               type="email"
-              placeholder="Correo electrónico"
-              value={correo}
-              onChange={(e) => setCorreo(e.target.value)}
+              className="field-input"
+              placeholder="usuario@iets.org.co"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
-          <div className="campo">
-            <label>Contraseña</label>
+          <div className="field-group">
+            <label className="field-label">Contraseña</label>
             <input
               type="password"
-              placeholder="Contraseña"
+              className="field-input"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
-        </div>
 
-        <button type="submit">
-          Iniciar sesión
-        </button>
+          <button type="submit" className="btn-primary">Iniciar Sesión</button>
+        </form>
 
-        <button onClick={loginGoogle} className="google-btn">
-          <img
-            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-            alt="Google"
-            className="logo-google"
-          />
+        <button className="btn-google" onClick={handleGoogleLogin}>
+          <svg className="google-icon" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+            <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+            <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+          </svg>
           Continuar con Google
         </button>
 
-        <div className="login-link">
-
-          <div className="linea">
-            <span>¿No tienes cuenta? Registrate</span>
-          </div>
-
-          <button
-            type="button"
-            className="btn-login"
-            onClick={() => navigate("/")}
-          >
-            Registrarme
-          </button>
-
+        <div className="separator">
+          <div className="separator-line"></div>
+          <span className="separator-text">¿No tienes cuenta?</span>
+          <div className="separator-line"></div>
         </div>
 
+        <button className="btn-register" onClick={() => navigate("/")}>
+          Registrarme
+        </button>
+      </div>
 
-      </form>
-
+      <div className="flag-bar">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
-
   );
-
 }
 
 export default Login;
