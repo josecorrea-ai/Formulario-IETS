@@ -1,19 +1,20 @@
-// src/components/Navigation/Sidebar.jsx
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../../firebase/config";
 import { signOut } from "firebase/auth";
 import { guardarLog } from "../../utils/logService";
+import { useState } from "react";
 import "../../styles/navBar.css";
 
-export default function Sidebar() {
+export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
       const usuario = auth.currentUser?.email;
       if (usuario) {
-        await guardarLog(usuario, "cerrar_sesion", "desde_sidebar");
+        await guardarLog(usuario, "cerrar_sesion", "desde_navbar");
       }
       await signOut(auth);
       navigate("/");
@@ -23,43 +24,57 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
-        <div className="logo">
-          <span className="logo-text">Admin Panel</span>
+    <>
+      <div className="navbar">
+        {/* LOGO */}
+        <div className="navbar-left">
+          <span className="logo-text">IETS</span>
+        </div>
+
+        {/* LINKS (desktop) */}
+        <div className="navbar-center">
+          <Link to="/admin" className={location.pathname === "/admin" ? "active" : ""}>
+            Usuarios
+          </Link>
+
+          <Link to="/logs" className={location.pathname === "/logs" ? "active" : ""}>
+            Registros
+          </Link>
+        </div>
+
+        {/* DERECHA */}
+        <div className="navbar-right">
+          <span className="user-email">
+            {auth.currentUser?.email}
+          </span>
+
+          <button onClick={handleLogout} className="logout-btn">
+            Cerrar sesión
+          </button>
+
+          {/* BOTÓN HAMBURGUESA */}
+          <div className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+            ☰
+          </div>
         </div>
       </div>
 
-      <div className="sidebar-user">
-        <div className="user-avatar">
-          {auth.currentUser?.email?.charAt(0).toUpperCase() || 'A'}
-        </div>
-        <div className="user-info">
-          <span className="user-name">Administrador</span>
-          <span className="user-email">{auth.currentUser?.email}</span>
-        </div>
-      </div>
+      {/* MENÚ MÓVIL */}
+      {menuOpen && (
+        <div className="mobile-menu">
+          <Link to="/admin" onClick={() => setMenuOpen(false)}>
+            Usuarios
+          </Link>
 
-      <nav className="sidebar-nav">
-        <ul>
-          <li className={location.pathname === "/admin" ? "active" : ""}>
-            <Link to="/admin">
-              <span className="nav-text">Usuarios</span>
-            </Link>
-          </li>
-          <li className={location.pathname === "/logs" ? "active" : ""}>
-            <Link to="/logs">
-              <span className="nav-text">Actividad</span>
-            </Link>
-          </li>
-        </ul>
-      </nav>
+          <Link to="/logs" onClick={() => setMenuOpen(false)}>
+            Registros
+          </Link>
 
-      <div className="sidebar-footer">
-        <button onClick={handleLogout} className="logout-sidebar-btn">
-          <span className="logout-text">Cerrar Sesión</span>
-        </button>
-      </div>
-    </div>
+          <button onClick={handleLogout}>
+            Cerrar sesión
+          </button>
+        </div>
+      )}
+    </>
   );
 }
