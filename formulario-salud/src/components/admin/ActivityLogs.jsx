@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { db } from "../../firebase/config";
 import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
-import "../../styles/activityLogs.css";
+import "../../styles/adminPanel.css";
 import { useNavigate, Link } from "react-router-dom";
 import { auth } from "../../firebase/config";
 import { signOut } from "firebase/auth";

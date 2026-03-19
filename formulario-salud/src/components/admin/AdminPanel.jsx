@@ -5,6 +5,7 @@ import { collection, getDocs, updateDoc, deleteDoc, doc, addDoc } from "firebase
 import "../../styles/adminPanel.css";
 import { guardarLog } from "../../utils/logService";
 import { useNavigate, Link } from "react-router-dom";
+import ImagenLogo from "../../assets/Logo-IETS.png";
 
 export default function AdminPanel() {
   const navigate = useNavigate();
@@ -160,10 +161,7 @@ export default function AdminPanel() {
         <div className="nav-left">
           <div className="nav-brand">
             <div className="nav-brand-icon">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <circle cx="9" cy="9" r="3" fill="white"/>
-                <path d="M2 16C2 16 5 9 9 6C13 3 16 5 16 5" stroke="rgba(255,255,255,0.6)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-              </svg>
+              <img src={ImagenLogo} alt="Logo IETS" style={{ height: '45px', width: 'auto', objectFit: 'contain' }} />
             </div>
             <span className="nav-brand-text">IETS</span>
           </div>
