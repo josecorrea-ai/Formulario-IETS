@@ -5,6 +5,7 @@ import { guardarLog } from "../utils/logService";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { db, auth } from "../firebase/config.js";
 import { useNavigate } from "react-router-dom";
+import ImagenLogo from "../assets/Logo-IETS.png";
 
 function Formulario() {
   const navigate = useNavigate();
@@ -95,11 +96,7 @@ function Formulario() {
       {/* Logo Bar */}
       <div className="logo-bar">
         <div className="logo-icon-wrapper">
-          <svg width="32" height="26" viewBox="0 0 36 28" fill="none">
-            <path d="M2 26C2 26 8 14 18 8C28 2 34 6 34 6" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-            <circle cx="18" cy="14" r="4" fill="#1A9E8A"/>
-            <circle cx="18" cy="14" r="2" fill="white"/>
-          </svg>
+          <img src={ImagenLogo} alt="Logo IETS" style={{ height: '45px', width: 'auto', objectFit: 'contain' }} />
           <span className="logo-icon-text">Salud</span>
         </div>
         <div className="logo-divider"></div>

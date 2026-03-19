@@ -16,7 +16,7 @@ export default function AdminPanel() {
   
   // Estados para búsqueda y filtros
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc"); // "asc" o "desc"
+  const [sortOrder, setSortOrder] = useState("asc");
   const [filterDocType, setFilterDocType] = useState("todos");
 
   const [form, setForm] = useState({
@@ -43,11 +43,9 @@ export default function AdminPanel() {
     fetchUsers();
   }, []);
 
-  // Efecto para filtrar y ordenar cuando cambian los criterios
   useEffect(() => {
     let result = [...users];
     
-    // Filtrar por término de búsqueda
     if (searchTerm) {
       result = result.filter(user => 
         user.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -57,12 +55,10 @@ export default function AdminPanel() {
       );
     }
     
-    // Filtrar por tipo de documento
     if (filterDocType !== "todos") {
       result = result.filter(user => user.tipoDocumento === filterDocType);
     }
     
-    // Ordenar por nombre
     result.sort((a, b) => {
       const nameA = `${a.nombre || ''} ${a.apellido || ''}`.toLowerCase();
       const nameB = `${b.nombre || ''} ${b.apellido || ''}`.toLowerCase();
@@ -91,25 +87,45 @@ export default function AdminPanel() {
     });
   };
 
-  const handleCreate = async () => {
-    if (!form.nombre || !form.correo || !form.identificacion)
-      return alert("Llena los campos obligatorios");
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    
+    if (!form.nombre || !form.correo || !form.identificacion || !form.tipoDocumento || !form.fecha) {
+      return alert("Por favor complete todos los campos obligatorios");
+    }
 
-    await addDoc(collection(db, "formularios"), form);
-    await guardarLog(auth.currentUser?.email, "crear_usuario", form.correo);
-    closeModal();
-    fetchUsers();
+    try {
+      await addDoc(collection(db, "formularios"), form);
+      await guardarLog(auth.currentUser?.email, "crear_usuario", form.correo);
+      
+      closeModal();
+      fetchUsers();
+      alert("Usuario creado exitosamente");
+    } catch (error) {
+      console.error("Error al crear usuario:", error);
+      alert("Error al crear usuario. Por favor intente de nuevo.");
+    }
   };
 
-  const handleUpdate = async () => {
-    if (!form.nombre || !form.correo || !form.identificacion)
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    
+    if (!form.nombre || !form.correo || !form.identificacion) {
       return alert("Llena los campos obligatorios");
+    }
 
-    const userRef = doc(db, "formularios", editingUser.id);
-    await updateDoc(userRef, form);
-    await guardarLog(auth.currentUser?.email, "editar_usuario", form.correo);
-    closeModal();
-    fetchUsers();
+    try {
+      const userRef = doc(db, "formularios", editingUser.id);
+      await updateDoc(userRef, form);
+      
+      await guardarLog(auth.currentUser?.email, "editar_usuario", form.correo);
+      closeModal();
+      fetchUsers();
+      alert("Usuario actualizado exitosamente");
+    } catch (error) {
+      console.error("Error al actualizar usuario:", error);
+      alert("Error al actualizar usuario. Por favor intente de nuevo.");
+    }
   };
 
   const handleDelete = async (id, correo) => {
@@ -148,10 +164,19 @@ export default function AdminPanel() {
   };
 
   const openCreate = () => {
-    navigate("/formulario");
+    setIsCreating(true);
+    setEditingUser({});
+    setForm({
+      nombre: "",
+      apellido: "",
+      tipoDocumento: "",
+      identificacion: "",
+      correo: "",
+      fecha: "",
+      archivo: ""
+    });
   };
 
-  // Calcular estadísticas
   const documentosSubidos = filteredUsers.filter(u => u.archivo).length;
 
   return (
@@ -365,52 +390,115 @@ export default function AdminPanel() {
         </div>
       </div>
 
-      {/* Modal */}
-      {editingUser && (
+      {/* Modal de Registro */}
+      {(editingUser || isCreating) && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>{isCreating ? "Nuevo Usuario" : "Editar Usuario"}</h2>
-            <input 
-              name="nombre" 
-              placeholder="Nombre" 
-              value={form.nombre} 
-              onChange={handleChange} 
-            />
-            <input 
-              name="apellido" 
-              placeholder="Apellido" 
-              value={form.apellido} 
-              onChange={handleChange} 
-            />
-            <input 
-              name="tipoDocumento" 
-              placeholder="Tipo Documento (CC, TI, CE)" 
-              value={form.tipoDocumento} 
-              onChange={handleChange} 
-            />
-            <input 
-              name="identificacion" 
-              placeholder="Identificación" 
-              value={form.identificacion} 
-              onChange={handleChange} 
-            />
-            <input 
-              name="correo" 
-              placeholder="Correo" 
-              value={form.correo} 
-              onChange={handleChange} 
-            />
-            <input 
-              name="fecha" 
-              type="date" 
-              value={form.fecha} 
-              onChange={handleChange} 
-            />
-            <div className="modal-buttons">
-              <button className="save-btn" onClick={isCreating ? handleCreate : handleUpdate}>
-                {isCreating ? "Crear Usuario" : "Actualizar"}
-              </button>
-              <button className="close-btn" onClick={closeModal}>Cancelar</button>
+            <button className="btn-close-modal" onClick={closeModal}>×</button>
+            
+            <div className="modal-header">
+              <h2>Formulario de Registro</h2>
+              <p>Complete todos los campos para crear su cuenta</p>
+            </div>
+
+            <div className="modal-body">
+              <form onSubmit={isCreating ? handleCreate : handleUpdate}>
+                <div className="form-grid">
+                  {/* Primera fila */}
+                  <div className="form-group">
+                    <label>NOMBRE</label>
+                    <input 
+                      name="nombre" 
+                      placeholder="Nombre" 
+                      value={form.nombre} 
+                      onChange={handleChange} 
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>APELLIDO</label>
+                    <input 
+                      name="apellido" 
+                      placeholder="Apellido" 
+                      value={form.apellido} 
+                      onChange={handleChange} 
+                      required
+                    />
+                  </div>
+
+                  {/* Segunda fila */}
+                  <div className="form-group">
+                    <label>TIPO DE DOCUMENTO</label>
+                    <select 
+                      name="tipoDocumento" 
+                      value={form.tipoDocumento} 
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Seleccione</option>
+                      <option value="CC">CC - Cédula de Ciudadanía</option>
+                      <option value="CE">CE - Cédula de Extranjería</option>
+                      <option value="TI">TI - Tarjeta de Identidad</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label>IDENTIFICACIÓN</label>
+                    <input 
+                      name="identificacion" 
+                      placeholder="Número" 
+                      value={form.identificacion} 
+                      onChange={handleChange} 
+                      required
+                    />
+                  </div>
+
+                  {/* Tercera fila */}
+                  <div className="form-group">
+                    <label>FECHA DE NACIMIENTO</label>
+                    <input 
+                      name="fecha" 
+                      type="date" 
+                      value={form.fecha} 
+                      onChange={handleChange} 
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>CORREO ELECTRÓNICO</label>
+                    <input 
+                      name="correo" 
+                      type="email"
+                      placeholder="correo@ejemplo.com" 
+                      value={form.correo} 
+                      onChange={handleChange} 
+                      required
+                    />
+                  </div>
+
+                  {/* Checkbox de términos */}
+                  <div className="terms-checkbox full-width">
+                    <input type="checkbox" id="terms" required />
+                    <label htmlFor="terms">
+                      Acepto los términos y condiciones del sistema de registro IETS
+                    </label>
+                  </div>
+
+                  {/* Footer con botones */}
+                  <div className="modal-footer full-width">
+                    <button type="submit" className="btn-submit">
+                      {isCreating ? "ENVIAR REGISTRO" : "ACTUALIZAR USUARIO"}
+                    </button>
+                    
+                    <div className="login-prompt">
+                      ¿Ya tienes cuenta?
+                      <a href="/login" className="login-link">INICIAR SESIÓN</a>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
